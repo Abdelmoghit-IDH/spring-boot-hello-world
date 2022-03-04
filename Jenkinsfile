@@ -21,7 +21,7 @@ pipeline {
 
             steps{
                 script {
-                    mvn package
+                    sh 'mvn package'
                 }
             }
         }
@@ -29,8 +29,8 @@ pipeline {
         stage("build image"){
             steps{
                 script {
-                    docker build -t "hello_world:${params.VERSION}"
-                    docker tag "hello_world:${params.VERSION}" "${params.NEXUS_SERVER}:${params.VERSION}"
+                    sh 'docker build -t "hello_world:${params.VERSION}"'
+                    sh 'docker tag "hello_world:${params.VERSION}" "${params.NEXUS_SERVER}:${params.VERSION}"'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             steps{
                 script {
                     withCredentials([usernamePassword(credentialsId: 'nexus-repository', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
-                        docker login -u $USER -p $PWD ${params.NEXUS_SERVER}
+                       sh'docker login -u $USER -p $PWD ${params.NEXUS_SERVER}'
                     }
                 }
             }
