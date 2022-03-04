@@ -29,8 +29,8 @@ pipeline {
         stage("build image"){
             steps{
                 script {
-                    sh "docker build -t "hello_world:${params.VERSION}""
-                    sh "docker tag "hello_world:${params.VERSION}" "${params.NEXUS_SERVER}/hello_world:${params.VERSION}""
+                    sh "docker build -t 'hello_world:${params.VERSION}'"
+                    sh "docker tag 'hello_world:${params.VERSION}' '${params.NEXUS_SERVER}/hello_world:${params.VERSION}'"
                 }
             }
         }
@@ -41,7 +41,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'nexus-repository', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
                        sh "docker login -u $USER -p $PWD ${params.NEXUS_SERVER}"
-                       sh "docker push "${params.NEXUS_SERVER}/hello_world:${params.VERSION}"" 
+                       sh "docker push '${params.NEXUS_SERVER}/hello_world:${params.VERSION}'" 
                     }
                 }
             }
