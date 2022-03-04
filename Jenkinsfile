@@ -1,9 +1,13 @@
 def gv
+def NEXUS_SERVER
 
 pipeline {
     agent any
+    tools {
+        maven: "Maven"
+    }
     parameters {
-        choice(name: 'VERSION', choices:['1.1.0', '1.2.0','1.3.0'], description:'')
+        choice(name: 'VERSION', choices:['1.0', '1.1','1.2'], description:'')
         booleanParam(name: 'executeTests', defaultValue: true, description: '')
     }
 
@@ -12,40 +16,36 @@ pipeline {
 
             steps{
                 script {
-                    gv = load "script.groovy"
+                    NEXUS_SERVER = "68.183.216.191:8082"
                 }
             }
         }
 
-        stage("build"){
+        stage("build project"){
 
             steps{
                 script {
-                    gv.buildApp()
-                }
-                echo "This is the build stage"
-            }
-        }
-
-        stage("test"){
-            when {
-                expression {
-                    params.executeTests
-                }
-            }
-
-            steps{
-                script {
-                    gv.testApp()
+                    mvn package
                 }
             }
         }
 
-        stage("deploy"){
+        stage("build image"){
+            steps{
+                script {
+                    docker build -t "hello_world:${params.VERSION}"
+                    docker tag "hello_world:${params.VERSION}" "${params.NEXUS_SERVER}:${params.VERSION}"
+                }
+            }
+        }
+
+        stage("push image"){
 
             steps{
                 script {
-                    gv.deployApp()
+                    withCredentials([usernamePassword(credentialsId: 'nexus-repository', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
+                        docker login -u $USER -p $PWD ${params.NEXUS_SERVER}
+                    }
                 }
             }
         }
