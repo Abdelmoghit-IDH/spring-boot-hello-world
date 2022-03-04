@@ -4,7 +4,7 @@ def NEXUS_SERVER
 pipeline {
     agent any
     tools {
-        maven: "Maven"
+        maven "Maven"
     }
 
     stages {
