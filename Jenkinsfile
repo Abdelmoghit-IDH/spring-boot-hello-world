@@ -14,7 +14,7 @@ pipeline {
             steps{
                 script {
                     VERSION = "1.1"
-                    NEXUS_SERVER = "68.183.216.191:8081"
+                    NEXUS_SERVER = "68.183.216.191:8082"
                 }
             }
         }
