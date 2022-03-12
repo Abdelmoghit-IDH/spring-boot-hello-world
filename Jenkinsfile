@@ -42,7 +42,7 @@ pipeline {
             steps{
                 script {
                     withCredentials([usernamePassword(credentialsId: 'nexus-repository', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
-                       sh "docker login -u ${USER} -p ${PWD} ${NEXUS_SERVER}"
+                       sh "echo ${PWD} |docker login -u ${USER} --password-stdin ${NEXUS_SERVER}"
                        sh "docker push '${NEXUS_SERVER}/hello_world:${VERSION}'" 
                     }
                 }
