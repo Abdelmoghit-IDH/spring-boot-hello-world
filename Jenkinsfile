@@ -75,13 +75,6 @@ pipeline {
             steps{
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github-account', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
-                       sh "git config user.email 'jenkins@example.com'"
-                       sh "git config user.name 'Jenkins'"
-                       
-                       sh "git status"
-                       sh "git branch"
-                       sh "git config --list"
-
                        sh "git remote set-url origin https://${USER}:${PWD}@github.com/Abdelmoghit-IDH/spring-boot-hello-world.git"
                        sh "git add ."
                        sh "git commit -m 'change the version pox.xml to ${VERSION}'"
