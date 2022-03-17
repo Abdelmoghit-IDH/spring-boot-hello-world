@@ -1,4 +1,3 @@
-def gv
 def NEXUS_SERVER
 def VERSION
 
@@ -13,13 +12,26 @@ pipeline {
 
             steps{
                 script {
-                    VERSION = "1.1"
                     NEXUS_SERVER = "68.183.216.191:8082"
                 }
             }
         }
 
-        stage("build project"){
+        stage("Increment version"){
+
+            steps{
+                script {
+                    sh 'mvn build-helper:parse-version versions:set \
+                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                        versions:commit' 
+                    def matcher = readFile("pom.xml") =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    VERSION = "$version-$BUILD_NUMBER"
+                }
+            }
+        }
+
+        stage("Build project"){
 
             steps{
                 script {
@@ -28,7 +40,7 @@ pipeline {
             }
         }
 
-        stage("build image"){
+        stage("Build image"){
             steps{
                 script {
                     sh "docker build -t 'hello_world:${VERSION}' ."
@@ -37,7 +49,7 @@ pipeline {
             }
         }
 
-        stage("push image"){
+        stage("Push image"){
 
             steps{
                 script {
@@ -45,6 +57,15 @@ pipeline {
                        sh "docker login -u ${USER} -p ${PWD} ${NEXUS_SERVER}"
                        sh "docker push '${NEXUS_SERVER}/hello_world:${VERSION}'" 
                     }
+                }
+            }
+        }
+
+        stage("Deploy project"){
+
+            steps{
+                script {
+                    echo "Deploy to EC2 Amazon ..."
                 }
             }
         }
