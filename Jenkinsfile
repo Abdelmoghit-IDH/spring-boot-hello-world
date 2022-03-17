@@ -13,6 +13,13 @@ pipeline {
             steps{
                 script {
                     NEXUS_SERVER = "68.183.216.191:8082"
+
+                    buildStrategies {
+                        ignoreCommitterStrategy {
+                            ignoredAuthors("Jenkins")
+                            allowBuildIfNotExcludedAuthor(true)
+                        }
+                    }
                 }
             }
         }
