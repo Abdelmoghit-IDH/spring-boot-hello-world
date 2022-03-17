@@ -12,6 +12,7 @@ pipeline {
             steps{
                 script {
                     NEXUS_SERVER = "68.183.216.191:8082"
+                    echo "Building $BRANCH_NAME"
                 }
             }
         }
@@ -20,6 +21,7 @@ pipeline {
 
             steps{
                 script {
+                    echo "Testing $BRANCH_NAME"
                     sh 'mvn test'
                 }
             }
