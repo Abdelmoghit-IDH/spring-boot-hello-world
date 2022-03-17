@@ -17,11 +17,11 @@ pipeline {
             }
         }
 
-        stage("Clean old builds"){
+        stage("Clean Stage"){
 
             steps{
                 script {
-                    cleanWs deleteDirs: true, patterns: [[pattern: './target', type: 'EXCLUDE']]
+                    sh "mvn clean"
                 }
             }
         }
