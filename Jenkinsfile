@@ -17,6 +17,15 @@ pipeline {
             }
         }
 
+        stage("Clean old builds"){
+
+            steps{
+                script {
+                    cleanWs deleteDirs: true, patterns: [[pattern: './target', type: 'EXCLUDE']]
+                }
+            }
+        }
+
         stage("Increment version"){
 
             steps{
